@@ -16,16 +16,26 @@
 
 int main(void)
 {
-    printf("inicio\n");
+   
     json_t* json;
 
+    
     json = init_json(5);
-    printf("se agrego el elemento\n");
-    json_add_int(json,"field 1", 123);
-    json_add_int(json,"field 2", 13223);
-    json_add_int(json,"field 3", 1223);
-    //json_add_char(json,"field 1", "hello word\r\n",strlen("hello word\r\n"));
+    
+
+    json_add_int(json,"posX",1700);
+    json_add_int(json,"posY",1987);
+    json_add_int(json,"numero entero",235);
+      
+
+    json_add_float(json,"numero real",25.5);
+
+   
+    json_add_element(json,"elemento3","cadena",E_STRING);
+  //json_add_element(json,"measure sensor",(void*)23.5,E_FLOAT);
     printf(" elemento agregado \n");
+
+   
 
     if(json != NULL)
     {
@@ -37,5 +47,6 @@ int main(void)
          get_string(json,string ,200);
         printf("json : %s ",string);
     }
+    
      return 0;
 }

@@ -61,13 +61,37 @@ void free_json(json_t* json);
 
 
 /**
-  * @brief Add a numeric  field to json
+  * @brief Add a string field 
   * @param  json: Object to be released 
-  * @param name_element: name to the field to add
-  * @param number: value of the number
+  * @param key: name to the field to add
+  * @param value: value of the string
   * @retval number 1 if it was successful and 0 if an error occurs
   */
-int json_add_int(json_t* json,char*  name_element,int number );
+
+int json_add_string(json_t* json, char* key, void* value);
+
+
+/**
+  * @brief Add a numeric  field to json
+  * @param  json: Object to be released 
+  * @param key: name to the field to add
+  * @param value: value of the number
+  * @retval number 1 if it was successful and 0 if an error occurs
+  */
+int json_add_int(json_t* json, char* key, int value);
+
+
+/**
+  * @brief Add a numeric float field to json
+  * @param  json: Object to be released 
+  * @param key: name to the field to add
+  * @param value: value of the number
+  * @retval number 1 if it was successful and 0 if an error occurs
+  */
+int json_add_float(json_t* json, char* key, double value);
+
+
+
 
 /**
   * @brief Add a numeric float field to json
@@ -77,24 +101,6 @@ int json_add_int(json_t* json,char*  name_element,int number );
   * @retval number 1 if it was successful and 0 if an error occurs
   */
 
-int json_add_float(json_t* json,char*  name_element,float number );
-
-/**
-  * @brief Add a string field to json
-  * @param  json: Object to be released 
-  * @param string: string to add to the json
-  * @param string_size: len of the string
-  * @retval number 1 if it was successful and 0 if an error occurs
-  */
-int json_add_char(json_t* json,char*  name_element,char string, uint16_t string_size );
-
-/**
-  * @brief return a string
-  * @param  json: Object to be released 
-  * @param string: string to add to the json
-  * @param number: value of the number
-  * @retval number 1 if it was successful and 0 if an error occurs
-  */
 
 int get_string(json_t* json, char *string, uint16_t size);
 
