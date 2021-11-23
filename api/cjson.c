@@ -1,19 +1,20 @@
-/**Date: 18/10/2021 
- * Author: German Velardez
+/**
+ * @file json.c
+ * @author German Velardez (gvelardez@inti.gob.ar)
+ * @brief  Implementacion del formato json y funciones asociadas
+ * @version 0.1
+ * @date 2021-11-23
  * 
+ * @copyright Copyright (c) 2021
  * 
- * Description: 
- * Handling strings with json format in c language
- * 
- * **/
-
+ */
 
 
 #include "cjson.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdint.h>
 
 
 #define MINIMAL_SIZE        5    
@@ -22,21 +23,17 @@
 
 
 
-
-
-static element_t * _get_element(json_t* json,uint16_t pos)
+static element_t * _get_element(json_t* json,uint32_t pos)
 {
     element_t* element;
-
-   element = &( json->values[pos]);
-
+    element = &( json->values[pos]);
     return element;
 }
 
 
 
 
-static int _add_value(json_t* json, char* string,int16_t pos,type_element type)
+static int32_t _add_value(json_t* json, char* string,int32_t pos,type_element type)
 {
     //SET VALUE IN BUFFER
     element_t* element= &( json->values[pos]);
@@ -47,45 +44,28 @@ static int _add_value(json_t* json, char* string,int16_t pos,type_element type)
     //ADD ELEMENT
     element->type = type;
     element->value = buffer;
-
     return 1;
-
 }
 
 
 
-
-
-
-
-static int _set_element(json_t * json, uint16_t pos, char* name,void* value, type_element type)
+static int32_t _set_element(json_t * json, uint32_t pos, char* name,void* value, type_element type)
 {
     //SET KEY
-    
-
     json->keys[pos]= malloc(strlen(name+1));
     strcpy(json->keys[pos],name);
-
-   
-   
-    
- 
-    int res = _add_value(json,(char*)value,pos,type);
-        
-    
-  
+    int32_t res = _add_value(json,(char*)value,pos,type);
     return res;
    
-
 }
 
 
 
 
-int json_add_int(json_t* json, char* key, int value)
+int json_add_int(json_t* json, char* key, int32_t value)
 {
 
-    int res = 0;
+    int32_t res = 0;
     if(key != NULL) // invalid name
     {
         int pos = json->size; // last position
@@ -102,18 +82,18 @@ int json_add_int(json_t* json, char* key, int value)
 
 
 
-int json_add_float(json_t* json, char* key, double value)
+int json_add_float(json_t* json, char* key, float value)
 {
 
     int res = 0;
     if(key != NULL) // invalid name
     {
-        int pos = json->size; // last position
+        int size = json->size; // ultima posicion
         char buf[20];
         sprintf(buf,"%.2f",value);
-        res =  _set_element(json,pos,key,buf,E_FLOAT);
-        pos = pos + 1;
-        json->size = pos ;
+        res =  _set_element(json,size,key,buf,E_FLOAT);
+        size = size + 1;
+        json->size = size ;
       
     }
     return res;
@@ -121,7 +101,7 @@ int json_add_float(json_t* json, char* key, double value)
 
 
 
-json_t* init_json(uint16_t size)
+json_t* json_init(uint16_t size)
 {
   
 
@@ -132,7 +112,7 @@ json_t* init_json(uint16_t size)
     if(json != NULL) 
     {
         json->size= 0;   // init to zero elements
-        json->keys = malloc(sizeof(char*) * NAME_KEY); // array with name elements
+        json->keys = malloc(sizeof(char*) * size); // array de string. 
         json->values = malloc(sizeof(element_t)*size);           // array with type of elements;
     }   
 
@@ -143,7 +123,25 @@ json_t* init_json(uint16_t size)
 
 
 
-void free_json(json_t* json);
+void json_delete(json_t* json)
+{
+    uint32_t pos = json->size;
+
+    //libero keys, libero char* en elementos, libero elementos
+    if(json !=NULL)
+    {
+        // libero los strings de nombres keys
+        for(uint32_t i=0 ; i< json->size; i++)
+        {
+            free(json->keys[i]);
+            free(json->values[i].value); // free value dentro de elementos
+    
+        }
+        // libero el array de keys
+        free(json->keys);
+        free(json->values);
+    }
+}
 
 
 
@@ -172,7 +170,7 @@ int json_add_string(json_t* json, char* key, void* value)
 
 
 
-int get_string(json_t* json, char *string, uint16_t size)
+int json_get_string(json_t* json, char *string, uint32_t size)
 {
     int len = 0;
     sprintf(string,"{\n");
@@ -187,18 +185,19 @@ int get_string(json_t* json, char *string, uint16_t size)
 
         if( element->type == E_STRING)
         {
-            sprintf((string+len),"\r\n %c  \"%s \" : \"%s\" ",counter == 0 ? ' ': ',' ,name,(char*)element->value);
-
+            sprintf((string+len),"\r\n %c  \"%s \" : \"%s\" ",
+                                    counter == 0 ? ' ': ',' ,
+                                    name,
+                                    (char*)element->value);
         }
       
         else
         {
-           sprintf((string+len),"\r\n %c  \"%s \" : %s ",counter == 0 ? ' ': ',' ,name,(char*)element->value);   
+           sprintf((string+len),"\r\n %c  \"%s \" : %s ",
+                                    counter == 0 ? ' ': ',' ,
+                                    name,
+                                    (char*)element->value);   
         }
-       
-                
-    
-       
          len = strlen(string);
 
     }
