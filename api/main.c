@@ -10,34 +10,34 @@
 
 #include <stdio.h>
 
-#include "cjson.h"
+#include "api/cjson.h"
 
 
 
 int main(void)
 {
-    json_t* json;  // create a pointer for json_t
+    cjson_t* json;  // create a pointer for json_t
 
-    
-    json = json_init(5); //this function return json object with size for 5 elements
+    #define BUFFER_JSON   200
+    json = cjson_create(BUFFER_JSON); //this function return json object with size for 5 elements
     
 
     
     
     if(json != NULL)
     {
-      json_add_int(json,"posX",1700);   // add element with type INT
-      json_add_int(json,"posY",1987);
-      json_add_int(json,"numero entero",235);
-      json_add_float(json,"numero real",25.5);   // add element with type float
-      json_add_string(json,"elemento3","cadena");  // add element with type char* (string)
+      cjson_add_int(json,"posX",1700);   // add element with type INT
+      cjson_add_int(json,"posY",1987);
+      cjson_add_int(json,"numero entero",235);
+      cjson_add_float(json,"numero real",25.5);   // add element with type float
+      cjson_add_string(json,"elemento3","cadena");  // add element with type char* (string)
       
-      char string[200];  // you need a buffer to get json string
+      char* p_string  =  cjson_get_string(json);
+
       
-      int res = json_get_string(json,string ,200);    //get de json string
-      if(res != 0)  // if res == 0, error 
+      if(p_string != NULL)  // if res == 0, error 
       {
-        printf("json : %s ",string);
+        printf("json : %s ",p_string);
       }
       
     }

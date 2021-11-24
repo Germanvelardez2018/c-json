@@ -1,6 +1,6 @@
  #Copilar todo
 
- gcc main.c cjson.c -o api.o
+ gcc main.c api/cjson.c -o api.o
 
 
 echo    "corremos el programa"
